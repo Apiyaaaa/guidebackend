@@ -17,7 +17,7 @@ class Article(db.Model):
     tags = db.Column(db.String(255))
     uid = db.Column(db.Integer)
     country = db.Column(db.String(20))
-    public = db.Column(db.Integer, default=1)
+    is_publish = db.Column(db.Integer, default=1)
 
 class Lable(db.Model):
     __tablename__ = 'lable'

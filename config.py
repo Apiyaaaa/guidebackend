@@ -1,8 +1,11 @@
 # This Python file uses the following encoding: utf-8
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
+
 
 app = Flask(__name__)
+CORS(app, supports_credentials=True)
 username = 'root'
 password = '123456'
 host = 'localhost'
