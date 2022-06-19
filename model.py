@@ -18,6 +18,11 @@ class Article(db.Model):
     uid = db.Column(db.Integer)
     country = db.Column(db.String(20))
     is_publish = db.Column(db.Integer, default=1)
+    def __init__(self, **kwargs):
+        for key in kwargs:
+            if hasattr(self, key):
+                setattr(self, key, kwargs[key])
+        
 
 class Lable(db.Model):
     __tablename__ = 'lable'
@@ -25,6 +30,10 @@ class Lable(db.Model):
     label_name = db.Column(db.String(255))
     label_alias = db.Column(db.String(500))
     label_discription= db.Column(db.String(255))
+    def __init__(self, **kwargs):
+        for key in kwargs:
+            if hasattr(self, key):
+                setattr(self, key, kwargs[key])
 
 class User(db.Model):
     __tablename__ = 'user'
@@ -32,6 +41,10 @@ class User(db.Model):
     user_name = db.Column(db.String(255))
     user_password = db.Column(db.String(500))
     created_time = db.Column(db.DateTime, default=datetime.now())
+    def __init__(self, **kwargs):
+        for key in kwargs:
+            if hasattr(self, key):
+                setattr(self, key, kwargs[key])
 
 class Log(db.Model):
     __tablename__ = 'log'
@@ -39,4 +52,8 @@ class Log(db.Model):
     ip = db.Column(db.String(255))
     behavior = db.Column(db.String(500))
     created_time = db.Column(db.String(255), default=datetime.now())
+    def __init__(self, **kwargs):
+        for key in kwargs:
+            if hasattr(self, key):
+                setattr(self, key, kwargs[key])
 
