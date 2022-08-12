@@ -1,0 +1,23 @@
+.App {
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+  /* justify-content: space-between; */
+}
+.left-nav {
+  width: 280px;
+  height: 100vh;
+  background-color: #F3F3F3;
+}
+.user-name {
+  font-size: 18px;
+  font-weight: bold;
+  padding-top: 20px;
+}
+.right-content{
+  width: auto;
+  margin-left: 50px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}

@@ -1,0 +1,8 @@
+# This Python file uses the following encoding: utf-8
+from "../" import *
+from config import *
+from flask import jsonify
+import os
+import base64
+
+def createUser(user_name, user_password):
