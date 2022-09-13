@@ -20,5 +20,5 @@ app.register_blueprint(api_indexs)
 if __name__ == '__main__':
     # db.drop_all()
     db.create_all()
-    app.run(port=80, debug=True)
+    app.run(port=8080, debug=True)
     

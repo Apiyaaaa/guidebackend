@@ -8,12 +8,14 @@ from utils.utils import first2dict, query2dict, dataReturn
 
 #获取文章
 def getArticle(word, page):
-    page = int(page)
+    # page = int(page)
     if word == '':
-        results = Article.query.filter_by(is_publish=1).paginate(page=page, per_page=20, error_out=False).items
+        # .paginate(page=page, per_page=20, error_out=False)
+        results = Article.query.filter_by(is_publish=1).all()
     else:
+        # .paginate(page=page, per_page=20, error_out=False)
         results = Article.query.filter(Article.title.like(
-            "%" + str(word) + "%")).filter_by(is_publish='1').paginate(page=page, per_page=20, error_out=False).items
+            "%" + str(word) + "%")).filter_by(is_publish=1).all()
     results = query2dict(results)
     queryCount = len(results)
     msg = f"共有{queryCount}篇文章"
