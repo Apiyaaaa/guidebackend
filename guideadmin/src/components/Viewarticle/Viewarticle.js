@@ -11,54 +11,31 @@ import {
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import AddIcon from '@mui/icons-material/Add';
 import { useState, useEffect } from "react";
-import Edit from "../../Edit/Edit";
+import EditArticle from "../EditArticle";
 import { searchByTitleAndId, deleteArticle } from "../../Utils/api.js";
 
 
 function Viewarticle() {
 
-  const [rows, setRows] = useState([
-    {
-      article_id: 'a',
-      country: "美国",
-      is_publish: 1,
-      summary: "123",
-      tags: ["123"],
-      title: "123",
-      uid: 1,
-      update_time: "Sat, 09 Jul 2022 02:59:14 GMT",
-      views: 0,
-    },
-  ]);
-  const [page, setPage] = useState(1);
-  const [word, setWord] = useState("");
-  const [isEditing, setIsEditing] = useState(false);
-  const [articleid, setArticleid] = useState('new');
+  const [rows, setRows] = useState([]);//每行数据
+  const [page, setPage] = useState(1);//页数
+  const [word, setWord] = useState("");//搜索词语
+  const [isEditing, setIsEditing] = useState(false);//编辑状态
+  const [articleid, setArticleid] = useState('new');//编辑的文章ID
   const [message, setMessage] = useState({
     open: false,
     msg: 'test'
-  });
+  });//操作反馈
   const { msg, open } = message;
 
 
-  //搜索按钮
-  const search = () => {
-    //search by id or title
-    searchByTitleAndId(word, page).then((res) => {
-      if (res.data) {
-        if (res.data.data) {
-          setRows(res.data.data);
-        } else {
-          setRows([]);
-        }
-      }
-    });
-  };
-  //搜索框数据绑定
-  const inputChange = () => {
-    setWord(document.getElementById("search").value);
+  //搜索框数据绑定,防抖
+  const inputChange = (e) => {
+    setTimeout(() => { setWord(e.target.value); }, 600)
+
   };
 
+  //切换页面
   const nextPage = () => {
     setPage(page + 1);
     console.log("nextPage");
@@ -83,32 +60,23 @@ function Viewarticle() {
     setIsEditing(false);
   };
 
+
   //删除文章
   const deleteArticleClick = (article_id, title) => {
-    deleteArticle(article_id, title).then((res) => {
-      if (res.data) {
-        if (res.data.msg) {
-          console.log(res.data.msg)
+    if (window.confirm("操作不可撤回，确定要删除吗？")) {
+      deleteArticle(article_id, title).then((res) => {
+        console.log(res.data.msg)
+  
+        //更新rows
+        updateRows();
+        //操作反馈
+        msgOpen(res.data.msg);
+  
+      });
 
-          //更新rows
-          searchByTitleAndId(word, page).then((res) => {
-            if (res.data) {
-              if (res.data.data) {
-                setRows(res.data.data);
-              } else {
-                setRows([]);
-              }
-            }
-          });
+    } 
 
-          //操作反馈
-          msgOpen(res.data.msg);
-
-        }
-      }
-    });
   }
-
   //操作反馈气泡
   const msgOpen = (mesg) => {
     setMessage({ msg: mesg, open: true });
@@ -117,31 +85,26 @@ function Viewarticle() {
     setMessage({ ...message, open: false });
   };
 
-  useEffect(() => {
-    const timer = setTimeout(() => { setMessage(''); }, 2000);
-    return () => clearTimeout(timer);
-  }, []);
+  //
+  const updateRows = () =>{
+    searchByTitleAndId(word, page).then((res) => {
+      setRows(res.data.data);
+    }, () => {
+      setRows([]);
+    });
+  }
 
   //加载文章列表
   useEffect(() => {
-    searchByTitleAndId(word, page).then((res) => {
-      if (res.data) {
-        if (res.data.data) {
-          setRows(res.data.data);
-        } else {
-          setRows([]);
-        }
-      }
-
-    });
+    updateRows();
   }, [word, page]);
 
+
   return (
-    <div>
+    <div className="right-content">
       {isEditing ? (
         <div>
-          <Edit articleid={articleid} setArticleid={setArticleid}></Edit>
-          <Button onClick={finishEdit}>退出编辑（不做保存）</Button>
+          <EditArticle articleid={articleid} setArticleid={setArticleid} finishEdit = {finishEdit}></EditArticle>
         </div>
       ) : (
         <div>
@@ -152,12 +115,11 @@ function Viewarticle() {
                 placeholder="搜索标题或ID"
                 onChange={inputChange}
               ></input>
-              <Button onClick={() => search()}>搜索</Button>
             </div>
 
             <Snackbar
               anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-              autoHideDuration={5000}
+              autoHideDuration={3000}
               open={open}
               onClose={msgClose}
               message={msg}
@@ -179,14 +141,14 @@ function Viewarticle() {
               <TableHead>
                 <TableRow>
                   <TableCell>ID</TableCell>
-                  <TableCell align="right">标题</TableCell>
-                  <TableCell align="right">简介</TableCell>
-                  <TableCell align="right">用户id</TableCell>
-                  <TableCell align="right">浏览</TableCell>
-                  <TableCell align="right">标签</TableCell>
-                  <TableCell align="right">国家</TableCell>
-                  <TableCell align="right">是否发布</TableCell>
-                  <TableCell align="right"></TableCell>
+                  <TableCell style={{ width: 100 }}>标题</TableCell>
+                  <TableCell style={{ width: 400 }}>简介</TableCell>
+                  <TableCell>用户ID</TableCell>
+                  <TableCell>浏览</TableCell>
+                  <TableCell>标签</TableCell>
+                  <TableCell>国家</TableCell>
+                  <TableCell>是否发布</TableCell>
+                  <TableCell></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -198,20 +160,18 @@ function Viewarticle() {
                     <TableCell component="th" scope="row">
                       {row.article_id}
                     </TableCell>
-                    <TableCell align="right">{row.title}</TableCell>
-                    <TableCell align="right">{row.summary}</TableCell>
-                    <TableCell align="right">{row.uid}</TableCell>
-                    <TableCell align="right">{row.views}</TableCell>
-                    <TableCell align="right">
-                      {row.tags/* {row.tags.map((element) => {
-                        return <a> {row.tags}</a>;
-                      })} */}
+                    <TableCell>{row.title}</TableCell>
+                    <TableCell>{row.summary}</TableCell>
+                    <TableCell>{row.uid}</TableCell>
+                    <TableCell>{row.views}</TableCell>
+                    <TableCell>
+                      {row.tags}
                     </TableCell>
-                    <TableCell align="right">{row.country}</TableCell>
-                    <TableCell align="right">
+                    <TableCell>{row.country}</TableCell>
+                    <TableCell>
                       {parseInt(row.is_publish) === 1 ? "发布" : "未发布"}
                     </TableCell>
-                    <TableCell align="right">
+                    <TableCell>
 
                       <Button onClick={() => editArticle(row.article_id)}>
                         编辑
@@ -228,16 +188,16 @@ function Viewarticle() {
           </TableContainer>
 
           <div className="footer">
-          <Button onClick={lastPage}>
-            <ArrowBackIosIcon></ArrowBackIosIcon>
-          </Button>
-          <Button onClick={nextPage}>
-            <ArrowBackIosIcon
-              style={{ transform: "rotate(180deg)" }}
-            ></ArrowBackIosIcon>
-          </Button>
-          </div>             
-          
+            <Button onClick={lastPage}>
+              <ArrowBackIosIcon></ArrowBackIosIcon>
+            </Button>
+            <Button onClick={nextPage}>
+              <ArrowBackIosIcon
+                style={{ transform: "rotate(180deg)" }}
+              ></ArrowBackIosIcon>
+            </Button>
+          </div>
+
 
 
 

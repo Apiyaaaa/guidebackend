@@ -6,6 +6,7 @@ function App() {
   const element = useRoutes(routes);
   return (
     <Fragment>
+      {/* 路由表切换组件 */}
        {element}
     </Fragment>
   );

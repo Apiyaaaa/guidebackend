@@ -33,7 +33,6 @@ def delete_article():
 def edit_article():
     if request.method == 'POST':
         data = request.form
-        # print(json.loads(data['data']))
         response = article.editArticle(**json.loads(data['data']))
         return jsonify(response)
 
@@ -42,9 +41,7 @@ def edit_article():
 def create_article():
     if request.method == 'POST':
         data = request.form
-        # data = json.loads(data)
         response = article.createArticle(**json.loads(data['data']))
-        
         return jsonify(response)
     
 @api_articles.route('/upload_img', methods=['POST'])

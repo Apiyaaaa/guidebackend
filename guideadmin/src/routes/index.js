@@ -4,8 +4,13 @@ import Viewusers from "../components/Viewusers/Viewusers";
 import Overview from "../components/Overview";
 import Home from '../Home/Home';
 import {Navigate} from 'react-router-dom'
+import Login from "../components/Login";
 
 export default [
+    {
+        path: '/login',
+        element: <Login />
+    },
     {
         path: '/',
         element: <Home />,

@@ -20,7 +20,10 @@ def get_article():
 def article():
     if request.method == 'GET':
         article_id = request.args.get('article_id')
-        response = index.article(article_id)
+        isFirstView = request.args.get('isFirstView')
+        print(isFirstView)
+
+        response = index.article(article_id,isFirstView)
         return jsonify(response)
 
 
@@ -29,5 +32,4 @@ def get_tags():
     if request.method == 'GET':
         response = index.getTags()
         return jsonify(response)
-
 
