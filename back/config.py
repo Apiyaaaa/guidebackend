@@ -7,7 +7,7 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
 username = 'root'
-password = '123456'
+password = 'password'
 host = 'localhost'
 database = 'guide'
 class Config:

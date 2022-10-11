@@ -3,6 +3,8 @@ from urllib import response
 from flask import Flask, request, json, jsonify, Blueprint
 from requests import RequestException
 import article.service as article
+from utils.utils import query2dict, dataReturn
+import json
 
 
 api_articles = Blueprint('articles', 'articles',url_prefix='/api/articles')
@@ -13,16 +15,17 @@ def get_article():
     if request.method == 'GET':
         article_id = request.args.get('article_id')
         title = request.args.get('title')
-        response = article.getArticle(article_id, title)
+        page = request.args.get('page')
+        response = article.getArticle(article_id, title,page)
         return jsonify(response)
 
 
 @api_articles.route('/delete_article', methods=['POST'])
 def delete_article():
     if request.method == 'POST':
-        article_id = request.form.get('article_id')
-        title = request.form.get('title')
-        response = article.deleteArticle(article_id, title)
+        data = request.form
+        print(json.loads(data['data']))
+        response = article.deleteArticle(**json.loads(data['data']))
         return jsonify(response)
 
 
@@ -30,7 +33,7 @@ def delete_article():
 def edit_article():
     if request.method == 'POST':
         data = request.form
-        response = article.editArticle(**data)
+        response = article.editArticle(**json.loads(data['data']))
         return jsonify(response)
 
 
@@ -38,9 +41,7 @@ def edit_article():
 def create_article():
     if request.method == 'POST':
         data = request.form
-        # data = json.loads(data)
-        response = article.createArticle(**data)
-        
+        response = article.createArticle(**json.loads(data['data']))
         return jsonify(response)
     
 @api_articles.route('/upload_img', methods=['POST'])
